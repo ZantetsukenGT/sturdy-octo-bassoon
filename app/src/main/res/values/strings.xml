@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">XMAS-TREE</string>
+
+    <string name="bRecorridoLR">Izquierda a \nDerecha</string>
+    <string name="bRecorridoRL">Derecha a \nIzquierda</string>
+    <string name="bRecorridoUD">Arriba a \nAbajo</string>
+    <string name="bRecorridoDU">Abajo a \nArriba</string>
+
+    <string name="sLED">LEDs</string>
+    <string name="sDispositivo">Dispositivo</string>
+
+    <string name="bDibujar">Dibujar Arbol</string>
+</resources>

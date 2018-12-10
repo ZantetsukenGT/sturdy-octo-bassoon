@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <ImageView
+        android:id="@+id/backGround"
+        android:src="@mipmap/horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType = "centerCrop"
+        />
+    <com.jetradarmobile.snowfall.SnowfallView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:snowflakesNum="150"
+        app:snowflakeAlphaMin="5"
+        app:snowflakeAlphaMax="255"
+        app:snowflakeAngleMax="10"
+        app:snowflakeSizeMin="8dp"
+        app:snowflakeSizeMax="32dp"
+        app:snowflakeSpeedMin="4"
+        app:snowflakeSpeedMax="12"
+        app:snowflakesFadingEnabled="true"
+        app:snowflakesAlreadyFalling="false"
+        app:snowflakeImage="@mipmap/snow"/>
+
+    <Switch
+        android:id="@+id/sDispositivo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/sDispositivo"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/sLED"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/sLED"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sLED"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/bRecorridoLR"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sDispositivo" />
+
+    <Button
+        android:id="@+id/bRecorridoLR"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/bRecorridoLR"
+        app:layout_constraintBottom_toTopOf="@+id/bRecorridoUD"
+        app:layout_constraintEnd_toStartOf="@+id/bRecorridoRL"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sLED" />
+
+    <Button
+        android:id="@+id/bRecorridoRL"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/bRecorridoRL"
+        app:layout_constraintBottom_toTopOf="@+id/bRecorridoUD"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bRecorridoLR"
+        app:layout_constraintTop_toBottomOf="@+id/sLED" />
+
+    <Button
+        android:id="@+id/bRecorridoUD"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/bRecorridoUD"
+        app:layout_constraintBottom_toTopOf="@+id/bDibujar"
+        app:layout_constraintEnd_toStartOf="@+id/bRecorridoDU"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bRecorridoLR" />
+
+    <Button
+        android:id="@+id/bRecorridoDU"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/bRecorridoDU"
+        app:layout_constraintBottom_toTopOf="@+id/bDibujar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bRecorridoUD"
+        app:layout_constraintTop_toBottomOf="@+id/bRecorridoLR" />
+
+    <Button
+        android:id="@+id/bDibujar"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/bDibujar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bRecorridoUD" />
+
+
+</android.support.constraint.ConstraintLayout>
