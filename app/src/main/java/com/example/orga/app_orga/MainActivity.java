@@ -1,12 +1,14 @@
 package com.example.orga.app_orga;
 
-import android.graphics.drawable.AnimationDrawable;
+import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -28,10 +30,15 @@ public class MainActivity extends AppCompatActivity {
     private static MediaPlayer bg = null;
     private static boolean isSetup = false;
 
+    public static int port = 0;
+    public static String host = "";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.setTitle(R.string.titleMenu);
 
         if(!isSetup)
         {
@@ -56,12 +63,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ImageButton ib = findViewById(R.id.bConfigurar);
+
+        ib.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v) {
+                mp.start();
+                Configurar(v);
+            }
+        });
+
         Button b = findViewById(R.id.bRecorridoLR);
         b.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v) {
-                Graficar(v);
                 mp.start();
+                Graficar(v);
             }
         });
 
@@ -69,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v) {
-                Graficar(v);
                 mp.start();
+                Graficar(v);
             }
         });
 
@@ -78,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v) {
-                Graficar(v);
                 mp.start();
+                Graficar(v);
             }
         });
 
@@ -87,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v) {
-                Graficar(v);
                 mp.start();
+                Graficar(v);
             }
         });
 
@@ -96,10 +113,32 @@ public class MainActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v) {
-                Graficar(v);
                 mp.start();
+                Graficar(v);
             }
         });
+    }
+
+    public void Configurar(View view)
+    {
+        Intent randomIntent = new Intent(this, Settings.class);
+
+        startActivityForResult(randomIntent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {//Settings
+            if(resultCode == Activity.RESULT_OK)
+            {
+                String result = data.getStringExtra("result");
+                String[] array = result.split(":");
+                host = array[0];
+                port = Integer.parseInt(array[1]);
+                new MyTask().execute("Config");
+            }
+        }
     }
 
     private void setup()
@@ -147,9 +186,6 @@ public class MainActivity extends AppCompatActivity {
 
         if(dispositivo.isChecked() || view.getId() == R.id.sDispositivo)
         {
-            String ip = "192.168.1.23";
-            int port = 8080;
-
             String request = "";
             switch (view.getId()) {
                 case R.id.sLED:
@@ -194,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                     request = "Dibujar";
                     break;
             }
-            new MyTask().execute(request, ip, port);
+            new MyTask().execute(request);
         }
         else
         {
@@ -203,84 +239,98 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public int mandarRequest(final String request, final String ip, int port) {
-        String urlString = "http://" + ip + ":" + port + "/orga/server/Animacion/" + request;
-        int serverResponseCode = 0;
+    public int mandarRequest(final String request) {
+        final String urlString = "http://" + host + ":" + port + "/orga/server/Animacion/" + request;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, urlString, Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        if(!ping(ip,port,500))
+        if(ping(host,port,500))
         {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(MainActivity.this, "Error en la conexion, no estamos en la misma red", Toast.LENGTH_SHORT).show();
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+                urlConnection.setDoInput(true);
+                urlConnection.setUseCaches(false);
+                urlConnection.setRequestMethod("GET");
+
+                StringBuffer sb = new StringBuffer();
+                InputStream is = null;
+                is = new BufferedInputStream(urlConnection.getInputStream());
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String inputLine = "";
+                while ((inputLine = br.readLine()) != null) {
+                    sb.append(inputLine);
                 }
-            });
-            return serverResponseCode;
-        }
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                is.close();
 
-            urlConnection.setDoInput(true);
-            urlConnection.setUseCaches(false);
-            urlConnection.setRequestMethod("GET");
+                final String serverResponseMessage = sb.toString();
+                final int serverResponseCode = urlConnection.getResponseCode();
 
-            StringBuffer sb = new StringBuffer();
-            InputStream is = null;
-            is = new BufferedInputStream(urlConnection.getInputStream());
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String inputLine = "";
-            while ((inputLine = br.readLine()) != null) {
-                sb.append(inputLine);
+                if (serverResponseCode == 200) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "OK: " + serverResponseMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else if(serverResponseCode == 409)
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Conflicto: " + serverResponseMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else if(serverResponseCode == 406)
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Conflicto: " + serverResponseMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Error: " + serverResponseCode, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                return serverResponseCode;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                Toast.makeText(MainActivity.this, "URL mal formada!", Toast.LENGTH_SHORT).show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
             }
-            is.close();
-
-            final String serverResponseMessage = sb.toString();
-            serverResponseCode = urlConnection.getResponseCode();
-
-            if (serverResponseCode == 200) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, "OK: " + serverResponseMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-            else if(serverResponseCode == 409)
-            {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, "Conflicto: " + serverResponseMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-            else
-            {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, "Error: " + serverResponseMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            Toast.makeText(MainActivity.this, "URL mal formada!", Toast.LENGTH_SHORT).show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
         }
 
-            return serverResponseCode;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, "Error en la conexion, no estamos en la misma red", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return 0;
     }
 
-    private class MyTask extends AsyncTask<Object, Void, Object[]> {
+    public class MyTask extends AsyncTask<Object, Void, Object[]> {
         @Override
         protected Object[] doInBackground(Object... params) {
-            int code = mandarRequest(params[0].toString(),params[1].toString(), (int)params[2]);
+            int code = mandarRequest(params[0].toString());
 
             params = new Object[]{code,params[0]};
             return params;

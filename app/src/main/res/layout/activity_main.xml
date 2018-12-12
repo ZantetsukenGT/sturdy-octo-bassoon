@@ -10,11 +10,11 @@
 
     <ImageView
         android:id="@+id/backGround"
-        android:src="@mipmap/horizontal"
+        android:src="@mipmap/horizontal2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType = "centerCrop"
-        />
+        android:scaleType = "centerCrop" />
+
     <com.jetradarmobile.snowfall.SnowfallView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,6 +29,12 @@
         app:snowflakesFadingEnabled="true"
         app:snowflakesAlreadyFalling="false"
         app:snowflakeImage="@mipmap/snow"/>
+
+    <ImageButton
+        android:id="@+id/bConfigurar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/gear"/>
 
     <Switch
         android:id="@+id/sDispositivo"

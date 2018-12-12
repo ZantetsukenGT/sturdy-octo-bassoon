@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">XMAS-TREE</string>
+    <string name="app_name">XMAS TREE</string>
+    <string name="titleMenu">Menú Principal</string>
+    <string name="titleSettings">Configuración</string>
 
     <string name="bRecorridoLR">Izquierda a \nDerecha</string>
     <string name="bRecorridoRL">Derecha a \nIzquierda</string>
@@ -10,4 +12,12 @@
     <string name="sDispositivo">Dispositivo</string>
 
     <string name="bDibujar">Dibujar Arbol</string>
+
+
+
+    <string name="txtHost">Host</string>
+    <string name="txtPort">Puerto</string>
+    <string name="bGuardarConfig">Guardar</string>
+
+
 </resources>
